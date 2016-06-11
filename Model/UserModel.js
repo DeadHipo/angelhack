@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
+var Generator = require('../Helper/generateToken');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-	_id: {type: String, index: true},
+	_id: {type: String, index: true },
 	phone_number: {type: Number, index: true },
+	token: {type: String, index: true },
 	password: String
 });
 
@@ -13,7 +15,8 @@ UserSchema.statics.registration = function registration(uid, phone_number, passw
 	}, {
 		$set: {
 			phone_number: phone_number,
-			password: password
+			password: password,
+			token: Generator(15)
 		}
 	}, {
 		upsert: true,
@@ -21,9 +24,9 @@ UserSchema.statics.registration = function registration(uid, phone_number, passw
 	},
 	function(error, document) {
 		if (error) {
-			return callback('1');
+			return callback(error);
 		}
-		return callback(null, '1');
+		return callback(null, document);
 	});
 }
 

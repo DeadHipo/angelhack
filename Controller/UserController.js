@@ -15,7 +15,7 @@ userRouter.get('/registration', function(req, res) {
 		if (error) {
 			return res.json({ error: {code: 1, msg: error} });
 		}
-		return res.json({response: {status: 'succes'}});
+		return res.json({response: {token: data.token}});
 	});
 });
 

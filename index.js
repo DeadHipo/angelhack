@@ -26,6 +26,7 @@ app.get('/', function (req, res) {
 
 app.listen(80);
 
+/*
 
 var service = new apn.connection({ production: false });
 
@@ -64,3 +65,5 @@ function pushNotificationToMany() {
 }
 
 pushNotificationToMany();
+
+*/
