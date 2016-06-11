@@ -22,7 +22,7 @@ pushRouter.get('/send', function(req, res) {
 
 		console.log(document);
 
-		sendPush(document.token);
+		sendPush(document._id);
 	});
 });
 
