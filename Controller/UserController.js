@@ -2,6 +2,7 @@ var express = require('express');
 var userRouter = express.Router();
 
 var UserSchema = require('../Model/UserModel').UserSchema;
+var User = require('../Model/UserModel').User;
 
 userRouter.get('/registration', function(req, res) {
 	var data = {
@@ -9,7 +10,7 @@ userRouter.get('/registration', function(req, res) {
 			password: req.query.password
 	};
 
-	UserSchema.registration(data.phone_number, data.password, function(error, data) {
+	User.registration(data.phone_number, data.password, function(error, data) {
 		if (error) {
 			return res.json({ error: {code: 1, msg: error} });
 		}
