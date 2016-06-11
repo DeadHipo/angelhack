@@ -19,10 +19,8 @@ pushRouter.get('/send', function(req, res) {
 		if (error || document == null) {
 			return res.json({error: {code: '1', msg: error}});
 		}
-
-		console.log(document);
-
 		sendPush(document._id);
+		res.json({response: {status: 'send'}});
 	});
 });
 
