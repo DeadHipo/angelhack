@@ -52,10 +52,7 @@ const STAGE = {
 */
 var users = {};
 
-
-
-telegramBot.on('text', function(msg)
-{
+telegramBot.on('text', function(msg) {
     var messageChatId = msg.chat.id;
     var messageText = msg.text;
     var messageDate = msg.date;
@@ -89,6 +86,26 @@ telegramBot.on('text', function(msg)
 			sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
 		}
 	});
+}).on('contact', function(msg) {
+	console.log(msg)
+    var messageChatId = msg.chat.id;
+    var userId = msg.from.id.toString();
+
+	if (!(userId in users)) {
+		return sendMessageByBot(messageChatId, "Введите /find и следуйте указаниям");	
+	} else if (users[userId].stage != STAGE.PHONE) {
+		return sendMessageByBot(messageChatId, "Ошибка");
+	}
+
+	var msg = contact.phone_number;
+	react(userId, messageText, function(data, loc) {
+		users[userId] = data;
+		if (!loc) {
+			sendMessageByBot(messageChatId, users[userId].stage.msg);
+		} else {
+			sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
+		}
+	});
 });
 
 function react(userId, msg, callback) {
@@ -103,26 +120,31 @@ function react(userId, msg, callback) {
 		case STAGE.PASSWORD: {
 			data.password = msg;
 
-			User.findUser(data.phone_number, data.password, function(error, document) {
-				if (error || document == null) {
-					data.stage = STAGE.LOGIN_ERROR;
-				} else {
-					data.device = document;
-					data.stage = STAGE.COMMAND;
-				}
+			if (!data.device) {
+				User.findUser(data.phone_number, data.password, function(error, document) {
+					if (error || document == null) {
+						data.stage = STAGE.LOGIN_ERROR;
+					} else {
+						data.device = document;
+						data.stage = STAGE.COMMAND;
+					}
+					callback(data);
+				});
+			} else {
 				callback(data);
-			});
+			}
+
 			break;
 		}
 		case STAGE.COMMAND: {
 			data.command = msg;
 			if (msg == 1) {
-				data.stage = STAGE.LOCATION;
+				data.stage = STAGE.COMMAND;
 				User.findGeo(data.phone_number, data.password, function(error, loc) {
 					callback(data, loc);
 				});
 			} else if (msg == 2) {
-				data.stage = STAGE.SIGNAL;
+				data.stage = STAGE.COMMAND;
 				sendPush(data.device._id);
 				callback(data);
 			} else {
