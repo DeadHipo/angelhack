@@ -65,6 +65,12 @@ telegramBot.on('text', function(msg) {
 			password: "null",
 			command: "null",
 			device: null,
+			replyMarkup: {
+				keyboard: [
+					"A",
+					"B"
+				]
+			}
 		}		
  	}
 
@@ -100,6 +106,10 @@ telegramBot.on('text', function(msg) {
 	var msg = msg.contact.phone_number;
 	react(userId, msg, function(data, loc) {
 		users[userId] = data;
+		if (data.stage == STAGE.COMMAND) {
+			sendMessageByBot(messageChatId, users[userId].stage.msg, data.replyMarkup);
+			return;
+		}
 		if (!loc) {
 			sendMessageByBot(messageChatId, users[userId].stage.msg);
 		} else {
