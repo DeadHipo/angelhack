@@ -17,6 +17,8 @@ pushRouter.get('/send', function(res, req) {
 			return res.json({error: {code: '1', msg: error}});
 		}
 
+		console.log(document);
+
 		sendPush(document.token);
 	});
 });
