@@ -40,7 +40,7 @@ userRouter.get('/login', function(req, res) {
 		password: req.query.password
 	};
 
-	User.findUser(data.phone_number, data.password function(error, data) {
+	User.findUser(data.phone_number, data.password, function(error, data) {
 		if (error) {
 			return res.json({error: {code: 1, msg: error}});
 		}
