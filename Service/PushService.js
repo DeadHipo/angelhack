@@ -27,7 +27,7 @@ service.on("disconnected", function() {
 
 service.on("socketError", console.error);
 
-module.exports.sendPush = function sendPush(token) {
+module.exports.sendPush = function sendPush(token, cmd) {
     console.log("Sending the same notification each of the devices with one call to pushNotification.");
     var note = new apn.notification();
     note.setAlertText("Хакатон по брацки ПЖ!");
