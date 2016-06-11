@@ -11,11 +11,11 @@ var UserSchema = new Schema({
 
 UserSchema.statics.registration = function registration(uid, phone_number, password, callback) {
 	User.findOneAndUpdate({
-		phone_number: phone_number,
-		password: password
+		phone_number: phone_number
 	}, {
 		$set: {
 			device_id: uid,
+			password: password,
 			token: Generator(15)
 		}
 	}, {
