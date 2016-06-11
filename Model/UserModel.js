@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
 	_id: {type: String, index: true },
-	phone_number: {type: Number, index: true },
+	phone_number: {type: String, index: true },
 	token: {type: String, index: true },
 	password: String
 });
