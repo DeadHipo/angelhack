@@ -30,7 +30,7 @@ const STAGE = {
 	},
 	LOCATION: {
 		num: 6,
-		msg: 'Последняя местоположение устройства'
+		msg: 'Последнее местоположение устройства'
 	},
 	LOGIN_ERROR: {
 		num: 7,
@@ -85,9 +85,16 @@ telegramBot.on('text', function(msg) {
 		return;
     }
 
-	react(userId, messageText, function(data, loc) {
+	react(userId, messageText, function(data, loc, more) {
+		if (more) {
+			sendMessageByBot(messageChatId, more);
+		}
 		users[userId] = data;
 		if (data.stage == STAGE.COMMAND) {
+			if (loc) {
+				sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
+				return;
+			}
 			sendMessageByBot(messageChatId, users[userId].stage.msg, data.replyMarkup);
 			return;
 		}
@@ -109,10 +116,13 @@ telegramBot.on('text', function(msg) {
 	}
 
 	var msg = msg.contact.phone_number;
-	react(userId, msg, function(data, loc) {
+	react(userId, msg, function(data, loc, more) {
+		if (more) {
+			sendMessageByBot(messageChatId, more);
+		}
 		users[userId] = data;
-		if (data.stage == STAGE.COMMAND) {
-			console.log(loc);
+		console.log(users[userId].stage == STAGE.COMMAND);
+		if (users[userId].stage == STAGE.COMMAND) {
 			if (loc) {
 				sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
 				return;
@@ -139,7 +149,6 @@ function react(userId, msg, callback) {
 		}
 		case STAGE.PASSWORD: {
 			data.password = msg;
-
 			if (!data.device) {
 				User.findUser(data.phone_number, data.password, function(error, document) {
 					if (error || document == null) {
@@ -161,15 +170,15 @@ function react(userId, msg, callback) {
 			if (msg == "Местоположение") {
 				data.stage = STAGE.COMMAND;
 				User.findGeo(data.phone_number, data.password, function(error, loc) {
-					callback(data, loc);
+					return callback(data, loc, "Последнее местоположение устройства");
 				});
 			} else if (msg == "Звуковой сигнал") {
 				data.stage = STAGE.COMMAND;
 				sendPush(data.device.device_id);
-				callback(data);
+				return callback(data, null, "Звуковой сигнал отправлен");
 			} else {
 				data.stage = STAGE.COMMAND_ERROR;
-				callback(data);
+				return callback(data);
 			}
 			break;
 		}
