@@ -6,7 +6,7 @@ var UserSchema = new Schema({
 	password: String
 });
 
-UserSchema.statics.registration = function(phone_number, password, callback) {
+UserSchema.statics.registration = function registration(phone_number, password, callback) {
 	User.findOneAndUpdate({
 		phone_number: phone_number
 	}, {
@@ -25,5 +25,6 @@ UserSchema.statics.registration = function(phone_number, password, callback) {
 	});
 }
 
+var User = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
-module.exports.User = mongoose.model('User', UserSchema);
+module.exports.User = User;

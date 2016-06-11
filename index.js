@@ -1,9 +1,9 @@
+var mongoose = require('mongoose');
 var express = require('express');
 var app = express();
 
 var user = require('./Controller/UserController');
 
-var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/db');
 
 app.use('/user', user);
