@@ -64,7 +64,7 @@ telegramBot.on('text', function(msg) {
 			phone_number: "null",
 			password: "null",
 			command: "null",
-			device: "null",
+			device: null,
 		}		
  	}
 
