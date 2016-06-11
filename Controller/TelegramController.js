@@ -98,7 +98,7 @@ telegramBot.on('text', function(msg) {
 	}
 
 	var msg = msg.contact.phone_number;
-	react(userId, messageText, function(data, loc) {
+	react(userId, msg, function(data, loc) {
 		users[userId] = data;
 		if (!loc) {
 			sendMessageByBot(messageChatId, users[userId].stage.msg);
