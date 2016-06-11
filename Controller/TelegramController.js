@@ -81,10 +81,10 @@ telegramBot.on('text', function(msg)
 		console.log(users[userId].stage);
     }
 
-    console.log("0 " + users[userId].stage);
+    console.log("0 " + users[userId].stage.num);
 	react(userId, messageText, function(data) {
 		users[userId] = data;
-		console.log("1 " + users[userId].stage);
+		console.log("1 " + users[userId].stage.num);
 		sendMessageByBot(messageChatId, users[userId].stage.msg);
 	});
 });
@@ -132,7 +132,7 @@ function react(userId, msg, callback) {
 			break;
 		}
 		case STAGE.HELP: {
-			data.stage = STAGE.HELP;
+			data.stage = STAGE.NULL;
 			callback(data);
 			break;
 		}
