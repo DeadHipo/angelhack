@@ -1,6 +1,6 @@
 var request = require('request');
 var User = require('../Model/UserModel').User;
-
+var sendPush = require('../Service/PushService').sendPush;
 var telegramBot = require('../Service/TelegramService');
 
 const STAGE = {
@@ -76,16 +76,18 @@ telegramBot.on('text', function(msg)
 		users[userId].stage = STAGE.PHONE;
 		return;
     } else if (messageText === '/help') {
-    	console.log("help");
-		users[userId].stage = STAGE.HELP;
-		console.log(users[userId].stage);
+    	sendMessageByBot(messageChatId, "Введите /find и следуйте указаниям");
+		users[userId].stage = STAGE.NULL;
+		return;
     }
 
-    console.log("0 " + users[userId].stage.num);
-	react(userId, messageText, function(data) {
+	react(userId, messageText, function(data, loc) {
 		users[userId] = data;
-		console.log("1 " + users[userId].stage.num);
-		sendMessageByBot(messageChatId, users[userId].stage.msg);
+		if (!loc) {
+			sendMessageByBot(messageChatId, users[userId].stage.msg);
+		} else {
+			sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
+		}
 	});
 });
 
@@ -100,20 +102,33 @@ function react(userId, msg, callback) {
 		}
 		case STAGE.PASSWORD: {
 			data.password = msg;
-			data.stage = STAGE.COMMAND;
-			callback(data);
+
+			User.findUser(data.phone_number, data.password, function(error, document) {
+				if (error || document == null) {
+					data.stage = STAGE.LOGIN_ERROR;
+				} else {
+					data.device = document;
+					data.stage = STAGE.COMMAND;
+				}
+				callback(data);
+			});
 			break;
 		}
 		case STAGE.COMMAND: {
 			data.command = msg;
 			if (msg == 1) {
 				data.stage = STAGE.LOCATION;
+				User.findGeo(data.phone_number, data.password, function(error, loc) {
+					callback(data, loc);
+				});
 			} else if (msg == 2) {
 				data.stage = STAGE.SIGNAL;
+				sendPush(data.device.token);
+				callback(data);
 			} else {
 				data.stage = STAGE.COMMAND_ERROR;
+				callback(data);
 			}
-			callback(data);
 			break;
 		}
 		case STAGE.SIGNAL: {
@@ -127,6 +142,11 @@ function react(userId, msg, callback) {
 			break;
 		}
 		case STAGE.LOGIN_ERROR: {
+			data.stage = STAGE.NULL;
+			callback(data);
+			break;
+		}
+		case STAGE.COMMAND_ERROR: {
 			data.stage = STAGE.NULL;
 			callback(data);
 			break;
@@ -148,7 +168,10 @@ function react(userId, msg, callback) {
 }
 
 
-function sendMessageByBot(aChatId, aMessage)
-{
+function sendMessageByBot(aChatId, aMessage) {
     telegramBot.sendMessage(aChatId, aMessage, { caption: 'I\'m a cute bot!' });
+}
+
+function sendLocationMessageByBot(aChatId, latitude, longitude) {
+	telegramBot.sendLocation(aChatId, latitude, longitude, { caption: 'I\'m a cute bot!' });
 }
