@@ -22,7 +22,7 @@ const STAGE = {
 	},
 	COMMAND: {
 		num: 4,
-		msg: '1 - Поиск по локации\n2 - Звуковой сигнал'
+		msg: 'Местоположение или звуковой сигнал?'
 	},
 	SIGNAL: {
 		num: 5,
@@ -61,7 +61,7 @@ telegramBot.on('text', function(msg) {
  	if (!(userId in users)) {
 
 
- 		var keys = [["Поиск по локации"], ["Звуковой сигнал"]];
+ 		var keys = [["Местоположение"], ["Звуковой сигнал"]];
 
 		users[userId] = {
 			stage: STAGE.NULL,
@@ -94,11 +94,11 @@ telegramBot.on('text', function(msg) {
 		if (!loc) {
 			sendMessageByBot(messageChatId, users[userId].stage.msg);
 		} else {
+			console.log(loc);
 			sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
 		}
 	});
 }).on('contact', function(msg) {
-	console.log(msg)
     var messageChatId = msg.chat.id;
     var userId = msg.from.id.toString();
 
@@ -112,6 +112,11 @@ telegramBot.on('text', function(msg) {
 	react(userId, msg, function(data, loc) {
 		users[userId] = data;
 		if (data.stage == STAGE.COMMAND) {
+			console.log(loc);
+			if (loc) {
+				sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
+				return;
+			}
 			sendMessageByBot(messageChatId, users[userId].stage.msg, data.replyMarkup);
 			return;
 		}
@@ -153,7 +158,7 @@ function react(userId, msg, callback) {
 		}
 		case STAGE.COMMAND: {
 			data.command = msg;
-			if (msg == "Поиск по локации") {
+			if (msg == "Местоположение") {
 				data.stage = STAGE.COMMAND;
 				User.findGeo(data.phone_number, data.password, function(error, loc) {
 					callback(data, loc);
@@ -210,7 +215,7 @@ function sendMessageByBot(aChatId, aMessage, keyboard) {
 }
 
 function sendLocationMessageByBot(aChatId, latitude, longitude) {
-	telegramBot.sendLocation(aChatId, latitude, longitude, { caption: 'I\'m a cute bot!' });
+	telegramBot.sendLocation(aChatId, latitude, longitude);
 }
 
 function editMessageReplyMarkup(aChatId, replyMarkup) {

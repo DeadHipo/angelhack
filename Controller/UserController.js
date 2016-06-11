@@ -11,6 +11,9 @@ userRouter.get('/registration', function(req, res) {
 		password: req.query.password
 	};
 
+	data.phone_number = data.phone_number.trim();
+	data.phone_number = "+" + data.phone_number;
+
 	User.registration(data.uid, data.phone_number, data.password, function(error, data) {
 		if (error) {
 			return res.json({ error: {code: 1, msg: error} });
@@ -26,6 +29,9 @@ userRouter.get('/location', function(req, res) {
 		password: req.query.password
 	};
 
+	data.phone_number = data.phone_number.trim();
+	data.phone_number = "+" + data.phone_number;
+
 	User.findGeo(data.phone_number, data.password, function(error, data) {
 		if (error) {
 			return res.json({ error: {code: 1, msg: error} });
@@ -39,6 +45,9 @@ userRouter.get('/login', function(req, res) {
 		phone_number: req.query.phone_number,
 		password: req.query.password
 	};
+
+	data.phone_number = data.phone_number.trim();
+	data.phone_number = "+" + data.phone_number;
 
 	User.findUser(data.phone_number, data.password, function(error, data) {
 		if (error) {

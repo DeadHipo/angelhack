@@ -13,6 +13,9 @@ pushRouter.get('/send', function(req, res) {
 		password: req.query.password
 	};
 
+	data.phone_number = data.phone_number.trim();
+	data.phone_number = "+" + data.phone_number;
+
 	User.findUser(data.phone_number, data.password, function(error, document) {
 		if (error || document == null) {
 			return res.json({error: {code: '1', msg: error}});
