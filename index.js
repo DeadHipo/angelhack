@@ -4,6 +4,7 @@ var app = express();
 
 var user = require('./Controller/UserController');
 var push = require('./Controller/PushController');
+var telegram = require('./Controller/telegramController');
 
 mongoose.connect('mongodb://localhost/db');
 

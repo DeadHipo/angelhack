@@ -30,8 +30,9 @@ service.on("socketError", console.error);
 module.exports.sendPush = function sendPush(token, cmd) {
     console.log("Sending the same notification each of the devices with one call to pushNotification.");
     var note = new apn.notification();
-    note.setAlertText("Хакатон по брацки ПЖ!");
-    note.badge = 1;
+
+    node.sound = "";
+    node.contentAvailable = 1;
 
     service.pushNotification(note, [token]);
 }
