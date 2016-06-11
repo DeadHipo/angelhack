@@ -9,7 +9,6 @@ pushRouter.get('/send', function(req, res) {
 	console.log(req.query);
 
 	var data = {
-		cmd: req.query.token,
 		phone_number: req.query.phone_number,
 		password: req.query.password
 	};
@@ -18,7 +17,7 @@ pushRouter.get('/send', function(req, res) {
 		if (error || document == null) {
 			return res.json({error: {code: '1', msg: error}});
 		}
-		sendPush(document._id, cmd);
+		sendPush(document._id);
 		res.json({response: {status: 'send'}});
 	});
 });
