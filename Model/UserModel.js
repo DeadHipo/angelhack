@@ -38,7 +38,7 @@ UserSchema.statics.findUser = function findUser(phone_number, password, callback
 		if (error) {
 			return callback(error);
 		}
-		else if (document.length) {
+		else if (document == null) {
 			return callback(null, null);
 		} 
 		return callback(null, document);
