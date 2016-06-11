@@ -3,7 +3,7 @@ var Generator = require('../Helper/generateToken');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-	_id: {type: String, index: true },
+	device_id: {type: String, index: true },
 	phone_number: {type: String, index: true },
 	token: {type: String, index: true },
 	password: String
@@ -11,11 +11,11 @@ var UserSchema = new Schema({
 
 UserSchema.statics.registration = function registration(uid, phone_number, password, callback) {
 	User.findOneAndUpdate({
-		_id: uid
+		phone_number: phone_number,
+		password: password
 	}, {
 		$set: {
-			phone_number: phone_number,
-			password: password,
+			device_id: uid,
 			token: Generator(15)
 		}
 	}, {
