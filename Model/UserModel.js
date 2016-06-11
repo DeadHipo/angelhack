@@ -2,15 +2,17 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
+	_id: {type: String, index: true},
 	phone_number: {type: Number, index: true },
 	password: String
 });
 
-UserSchema.statics.registration = function registration(phone_number, password, callback) {
+UserSchema.statics.registration = function registration(uid, phone_number, password, callback) {
 	User.findOneAndUpdate({
-		phone_number: phone_number
+		_id: uid
 	}, {
 		$set: {
+			phone_number: phone_number,
 			password: password
 		}
 	}, {
