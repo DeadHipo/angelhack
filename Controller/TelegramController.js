@@ -106,6 +106,8 @@ telegramBot.on('text', function(msg) {
 			sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
 		}
 	});
+}).on('sticker', function(msg) {
+	editMessageReplyMarkup({text: 'a'});
 });
 
 function react(userId, msg, callback) {
@@ -196,4 +198,8 @@ function sendMessageByBot(aChatId, aMessage) {
 
 function sendLocationMessageByBot(aChatId, latitude, longitude) {
 	telegramBot.sendLocation(aChatId, latitude, longitude, { caption: 'I\'m a cute bot!' });
+}
+
+function editMessageReplyMarkup(aChatId, replyMarkup) {
+	telegramBot.editMessageReplyMarkup(replyMarkup);
 }
