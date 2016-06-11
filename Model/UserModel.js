@@ -31,6 +31,7 @@ UserSchema.statics.registration = function registration(uid, phone_number, passw
 }
 
 UserSchema.statics.findUser = function findUser(phone_number, password, callback) {
+	console.log(phone_number, password);
 	User.findOne({
 		phone_number: phone_number,
 		password: password
