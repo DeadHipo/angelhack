@@ -4,7 +4,7 @@ var pushRouter = express.Router();
 
 var User = require('../Model/UserModel').User;
 
-pushRouter.('/send', function(res, req) {
+pushRouter.get('/send', function(res, req) {
 	var data = {
 		cmd: req.query.token,
 		token: req.query.token,
