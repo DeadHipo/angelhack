@@ -86,6 +86,10 @@ telegramBot.on('text', function(msg) {
 
 	react(userId, messageText, function(data, loc) {
 		users[userId] = data;
+		if (data.stage == STAGE.COMMAND) {
+			sendMessageByBot(messageChatId, users[userId].stage.msg, data.replyMarkup);
+			return;
+		}
 		if (!loc) {
 			sendMessageByBot(messageChatId, users[userId].stage.msg);
 		} else {
@@ -116,11 +120,6 @@ telegramBot.on('text', function(msg) {
 			sendLocationMessageByBot(messageChatId, loc.lat, loc.long);
 		}
 	});
-}).on('sticker', function(msg) {
-	editMessageReplyMarkup(JSON.stringify({
-         one_time_keyboard: true,
-          keyboard: [['test']]
-    }));
 });
 
 function react(userId, msg, callback) {
