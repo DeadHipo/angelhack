@@ -97,7 +97,7 @@ telegramBot.on('text', function(msg) {
 		return sendMessageByBot(messageChatId, "Ошибка");
 	}
 
-	var msg = contact.phone_number;
+	var msg = msg.contact.phone_number;
 	react(userId, messageText, function(data, loc) {
 		users[userId] = data;
 		if (!loc) {
