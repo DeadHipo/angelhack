@@ -107,7 +107,10 @@ telegramBot.on('text', function(msg) {
 		}
 	});
 }).on('sticker', function(msg) {
-	editMessageReplyMarkup({text: 'a'});
+	editMessageReplyMarkup(JSON.stringify({
+         one_time_keyboard: true,
+          keyboard: [['test']]
+    }));
 });
 
 function react(userId, msg, callback) {
