@@ -34,4 +34,21 @@ userRouter.get('/location', function(req, res) {
 	});
 });
 
+userRouter.get('/login', function(req, res) {
+	var data = {
+		phone_number: req.query.phone_number,
+		password: req.query.password
+	};
+
+	User.findUser(data.phone_number, data.password function(error, data) {
+		if (error) {
+			return res.json({error: {code: 1, msg: error}});
+		}
+		if (data == null) {
+			return res.json({error: {code: 2, msg: 'data is null'}});
+		}
+		return res.json({response: {status: 'success'}});
+	});
+});
+
 module.exports = userRouter;
