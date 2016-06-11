@@ -123,7 +123,7 @@ function react(userId, msg, callback) {
 				});
 			} else if (msg == 2) {
 				data.stage = STAGE.SIGNAL;
-				sendPush(data.device.token);
+				sendPush(data.device._id);
 				callback(data);
 			} else {
 				data.stage = STAGE.COMMAND_ERROR;
@@ -132,12 +132,12 @@ function react(userId, msg, callback) {
 			break;
 		}
 		case STAGE.SIGNAL: {
-			data.stage = STAGE.NULL;
+			data.stage = STAGE.COMMAND;
 			callback(data);
 			break;
 		}
 		case STAGE.LOCATION: {
-			data.stage = STAGE.NULL;
+			data.stage = STAGE.COMMAND;
 			callback(data);
 			break;
 		}
