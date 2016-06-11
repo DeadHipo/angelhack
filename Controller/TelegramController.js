@@ -145,7 +145,7 @@ function react(userId, msg, callback) {
 				});
 			} else if (msg == 2) {
 				data.stage = STAGE.COMMAND;
-				sendPush(data.device._id);
+				sendPush(data.device.device_id);
 				callback(data);
 			} else {
 				data.stage = STAGE.COMMAND_ERROR;

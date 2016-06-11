@@ -17,7 +17,7 @@ pushRouter.get('/send', function(req, res) {
 		if (error || document == null) {
 			return res.json({error: {code: '1', msg: error}});
 		}
-		sendPush(document._id);
+		sendPush(document.device_id);
 		res.json({response: {status: 'send'}});
 	});
 });
