@@ -45,6 +45,13 @@ UserSchema.statics.findUser = function findUser(phone_number, password, callback
 	});
 }
 
+UserSchema.statics.findGeo = function(phone_number, password, callback) {
+	return callback(null, {
+		lat: 59.9806261,
+		long: 30.3274549
+	});
+}
+
 var User = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
 module.exports.User = User;

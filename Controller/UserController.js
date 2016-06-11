@@ -19,4 +19,19 @@ userRouter.get('/registration', function(req, res) {
 	});
 });
 
+userRouter.get('/location', function(req, res) {
+	var data = {
+		uid: req.query.uid,
+		phone_number: req.query.phone_number,
+		password: req.query.password
+	};
+
+	User.findGeo(data.phone_number, data.password, function(error, data) {
+		if (error) {
+			return res.json({ error: {code: 1, msg: error} });
+		}
+		return res.json({response: {geo: data}});
+	});
+});
+
 module.exports = userRouter;
