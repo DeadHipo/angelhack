@@ -31,7 +31,7 @@ module.exports.sendPush = function sendPush(token) {
     console.log("Sending the same notification each of the devices with one call to pushNotification.");
     var note = new apn.notification();
 
-    note.sound = "";
+    note.sound = "alarm.mp3";
     note.contentAvailable = 1;
 
     service.pushNotification(note, [token]);

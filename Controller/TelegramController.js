@@ -3,27 +3,56 @@ var User = require('../Model/UserModel').User;
 
 var telegramBot = require('../Service/TelegramService');
 
-var STAGE = {
-	HELP: {
-		msg: 'Введите /find и следуйте указаниям'
-	},
+const STAGE = {
 	NULL: {
+		num: 0,
 		msg: 'Я не знаю таких команд :( Введите команду. /help'
 	},
-	START: {
-		msg: 'Введите номер телефона и пароль в формате +79999999999 mypassword'
+	HELP: {
+		num: 1,
+		msg: 'Введите /find и следуйте указаниям'
+	},
+	PHONE: {
+		num: 2,
+		msg: 'Введите номер телефона в формате +79516602639'
+	},
+	PASSWORD: {
+		num: 3,
+		msg: 'Введите пароль для поиска устройства'
 	},
 	COMMAND: {
+		num: 4,
 		msg: '1 - Поиск по локации\n2 - Звуковой сигнал'
 	},
-	DONE: {
-		msg: 'Отправлено'
+	SIGNAL: {
+		num: 5,
+		msg: 'Сигнал отправлен на устройство'
 	},
-	ERROR: {
-		msg: 'Ошибка'
+	LOCATION: {
+		num: 6,
+		msg: 'Последняя геолокация устройства'
+	},
+	LOGIN_ERROR: {
+		num: 7,
+		msg: 'Неверная связка логина или пароля'
+	},
+	COMMAND_ERROR: {
+		num: 8,
+		msg: 'Неверная команда'
 	}
 }
+/*
+{
+	stage: STAGE,
+	phone_number: phone,
+	password: password,
+	device: device,
+
+}
+*/
 var users = {};
+
+
 
 telegramBot.on('text', function(msg)
 {
@@ -33,60 +62,87 @@ telegramBot.on('text', function(msg)
     var userId = msg.from.id.toString();
 
  	if (!(userId in users)) {
-		users[userId] = STAGE.NULL; 		
+		users[userId] = {
+			stage: STAGE.NULL,
+			phone_number: "null",
+			password: "null",
+			command: "null",
+			device: "null",
+		}		
  	}
 
     if (messageText === '/find') {
-		users[userId] = STAGE.START;
+		sendMessageByBot(messageChatId, "Введите номер телефона в формате +79516602639");
+		users[userId].stage = STAGE.PHONE;
+		return;
     } else if (messageText === '/help') {
-		users[userId] = STAGE.HELP;
+    	console.log("help");
+		users[userId].stage = STAGE.HELP;
+		console.log(users[userId].stage);
     }
 
-	react({
-		userId: userId,
-		messageText: messageText
-	}, function(forUser) {
-		sendMessageByBot(messageChatId, forUser);
+    console.log("0 " + users[userId].stage);
+	react(userId, messageText, function(data) {
+		users[userId] = data;
+		console.log("1 " + users[userId].stage);
+		sendMessageByBot(messageChatId, users[userId].stage.msg);
 	});
 });
 
-function react(data, callback) {
-	switch(users[data.userId]) {
-		case STAGE.START: {
-			callback(users[data.userId].msg);
-			users[data.userId] = STAGE.COMMAND;
+function react(userId, msg, callback) {
+	var data = users[userId];
+	switch(data.stage) {
+		case STAGE.PHONE: {
+			data.phone_number = msg;
+			data.stage = STAGE.PASSWORD;
+			callback(data);
+			break;
+		}
+		case STAGE.PASSWORD: {
+			data.password = msg;
+			data.stage = STAGE.COMMAND;
+			callback(data);
 			break;
 		}
 		case STAGE.COMMAND: {
-			var userData = data.messageText.split(" ");
-			var formUser = {
-				phone_number: userData[0],
-				password: userData[1]
+			data.command = msg;
+			if (msg == 1) {
+				data.stage = STAGE.LOCATION;
+			} else if (msg == 2) {
+				data.stage = STAGE.SIGNAL;
+			} else {
+				data.stage = STAGE.COMMAND_ERROR;
 			}
-
-			console.log(formUser);
-
-			User.findUser(formUser.phone_number, formUser.password, function(error, document) {
-				if (error || document == null) {
-					console.log(error, document);
-					users[data.userId] = STAGE.ERROR;
-					callback(users[data.userId].msg);
-				} else {
-					users[data.userId] = STAGE.COMMAND;
-					callback(users[data.userId].msg);
-					users[data.userId] = STAGE.DONE;
-				}
-			});
+			callback(data);
 			break;
 		}
-		case STAGE.DONE: {
-
+		case STAGE.SIGNAL: {
+			data.stage = STAGE.NULL;
+			callback(data);
+			break;
 		}
-		case STAGE.ERROR: {
-			users[userId] = STAGE.NULL;
+		case STAGE.LOCATION: {
+			data.stage = STAGE.NULL;
+			callback(data);
+			break;
+		}
+		case STAGE.LOGIN_ERROR: {
+			data.stage = STAGE.NULL;
+			callback(data);
+			break;
+		}
+		case STAGE.HELP: {
+			data.stage = STAGE.HELP;
+			callback(data);
+			break;
+		}
+		case STAGE.NULL: {
+			callback(data);
+			break;
 		}
 		default: {
-			callback(users[data.userId].msg);
+			callback(data);
+			break;
 		}
 	}
 }
