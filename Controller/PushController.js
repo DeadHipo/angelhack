@@ -6,8 +6,8 @@ var User = require('../Model/UserModel').User;
 
 pushRouter.get('/send', function(res, req) {
 	var data = {
-		cmd: req.query.token,
-		token: req.query.token,
+		//cmd: req.query.token,
+		//token: req.query.token,
 		phone_number: req.query.phone_number,
 		password: req.query.password
 	};
