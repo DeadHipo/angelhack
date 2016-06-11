@@ -59,6 +59,10 @@ telegramBot.on('text', function(msg) {
     var userId = msg.from.id.toString();
 
  	if (!(userId in users)) {
+
+
+ 		var keys = [["Поиск по локации"], ["Звуковой сигнал"]];
+
 		users[userId] = {
 			stage: STAGE.NULL,
 			phone_number: "null",
@@ -66,20 +70,17 @@ telegramBot.on('text', function(msg) {
 			command: "null",
 			device: null,
 			replyMarkup: {
-				keyboard: [
-					"A",
-					"B"
-				]
+				keyboard: keys
 			}
 		}		
  	}
 
     if (messageText === '/find') {
-		sendMessageByBot(messageChatId, "Введите номер телефона в формате +79516602639");
+		sendMessageByBot(messageChatId, "Введите номер телефона в формате +79516602639", { hide_keyboard: true });
 		users[userId].stage = STAGE.PHONE;
 		return;
     } else if (messageText === '/help') {
-    	sendMessageByBot(messageChatId, "Введите /find и следуйте указаниям");
+    	sendMessageByBot(messageChatId, "Введите /find и следуйте указаниям", { hide_keyboard: true });
 		users[userId].stage = STAGE.NULL;
 		return;
     }
@@ -152,12 +153,12 @@ function react(userId, msg, callback) {
 		}
 		case STAGE.COMMAND: {
 			data.command = msg;
-			if (msg == 1) {
+			if (msg == "Поиск по локации") {
 				data.stage = STAGE.COMMAND;
 				User.findGeo(data.phone_number, data.password, function(error, loc) {
 					callback(data, loc);
 				});
-			} else if (msg == 2) {
+			} else if (msg == "Звуковой сигнал") {
 				data.stage = STAGE.COMMAND;
 				sendPush(data.device.device_id);
 				callback(data);
@@ -204,8 +205,8 @@ function react(userId, msg, callback) {
 }
 
 
-function sendMessageByBot(aChatId, aMessage) {
-    telegramBot.sendMessage(aChatId, aMessage, { caption: 'I\'m a cute bot!' });
+function sendMessageByBot(aChatId, aMessage, keyboard) {
+    telegramBot.sendMessage(aChatId, aMessage, keyboard);
 }
 
 function sendLocationMessageByBot(aChatId, latitude, longitude) {
