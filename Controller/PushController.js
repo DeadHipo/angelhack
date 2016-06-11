@@ -5,9 +5,6 @@ var pushRouter = express.Router();
 var User = require('../Model/UserModel').User;
 
 pushRouter.get('/send', function(req, res) {
-
-	console.log(req.query);
-
 	var data = {
 		phone_number: req.query.phone_number,
 		password: req.query.password

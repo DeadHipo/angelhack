@@ -14,7 +14,7 @@ const STAGE = {
 	},
 	PHONE: {
 		num: 2,
-		msg: 'Введите номер телефона в формате +79516602639'
+		msg: 'Введите номер телефона в формате +7XXXXXXXXXX или отправьте контакт'
 	},
 	PASSWORD: {
 		num: 3,
@@ -22,19 +22,19 @@ const STAGE = {
 	},
 	COMMAND: {
 		num: 4,
-		msg: 'Местоположение или звуковой сигнал?'
+		msg: 'Выберите действие'
 	},
 	SIGNAL: {
 		num: 5,
-		msg: 'Сигнал отправлен на устройство'
+		msg: 'Звуковой сигнал отправлен на устройство'
 	},
 	LOCATION: {
 		num: 6,
-		msg: 'Последняя геолокация устройства'
+		msg: 'Последняя местоположение устройства'
 	},
 	LOGIN_ERROR: {
 		num: 7,
-		msg: 'Неверная связка логина или пароля'
+		msg: 'Неверная пара логин / пароль'
 	},
 	COMMAND_ERROR: {
 		num: 8,
@@ -76,11 +76,11 @@ telegramBot.on('text', function(msg) {
  	}
 
     if (messageText === '/find') {
-		sendMessageByBot(messageChatId, "Введите номер телефона в формате +79516602639", { hide_keyboard: true });
+		sendMessageByBot(messageChatId, "Введите номер телефона в формате +7XXXXXXXXXX или отправьте контакт", { hide_keyboard: true });
 		users[userId].stage = STAGE.PHONE;
 		return;
-    } else if (messageText === '/help') {
-    	sendMessageByBot(messageChatId, "Введите /find и следуйте указаниям", { hide_keyboard: true });
+    } else if (messageText === '/help' || messageText === '/start') {
+    	sendMessageByBot(messageChatId, "Введите /find для использования сервиса", { hide_keyboard: true });
 		users[userId].stage = STAGE.NULL;
 		return;
     }

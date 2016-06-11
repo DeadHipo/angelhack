@@ -10,10 +10,8 @@ var UserSchema = new Schema({
 });
 
 UserSchema.statics.registration = function registration(uid, phone_number, password, callback) {
-	var phone = phone_number.trim();
-	phone = "+" + phone;
 	User.findOneAndUpdate({
-		phone_number: phone
+		phone_number: phone_number
 	}, {
 		$set: {
 			device_id: uid,
