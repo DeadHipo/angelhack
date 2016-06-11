@@ -30,6 +30,21 @@ UserSchema.statics.registration = function registration(uid, phone_number, passw
 	});
 }
 
+UserSchema.statics.findUser = function findUser(phone_number, password, callback) {
+	User.findOne({
+		phone_number: phone_number,
+		password: password
+	}, function(error, document) {
+		if (error) {
+			return callback(error);
+		}
+		else if (document.length) {
+			return callback(null, null);
+		} 
+		return callback(null, document);
+	});
+}
+
 var User = mongoose.model('User', UserSchema);
 module.exports.UserSchema = UserSchema;
 module.exports.User = User;
