@@ -6,6 +6,8 @@ var user = require('./Controller/UserController');
 var push = require('./Controller/PushController');
 var telegram = require('./Controller/TelegramController');
 
+app.use(express.static(__dirname + '/www'));
+
 mongoose.connect('mongodb://localhost/db');
 
 var db = mongoose.connection;
@@ -23,7 +25,7 @@ app.use('/user', user);
 app.use('/push', push);
 
 app.get('/', function (req, res) {
-	res.json({status: 1});
+	res.sendfile('./www/index.html');
 });
 
 app.listen(80);
