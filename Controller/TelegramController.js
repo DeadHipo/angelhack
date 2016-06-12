@@ -77,6 +77,7 @@ telegramBot.on('text', function(msg) {
 
     if (messageText === '/find') {
 		sendMessageByBot(messageChatId, "Введите номер телефона в формате +7XXXXXXXXXX или отправьте контакт", { hide_keyboard: true });
+		users[userId].device = null;
 		users[userId].stage = STAGE.PHONE;
 		return;
     } else if (messageText === '/help' || messageText === '/start') {
