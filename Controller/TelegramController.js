@@ -160,6 +160,7 @@ function react(userId, msg, callback) {
 					callback(data);
 				});
 			} else {
+				data.stage = STAGE.COMMAND;
 				callback(data);
 			}
 
